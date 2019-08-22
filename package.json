@@ -30,9 +30,6 @@
     "typescript": "^3.5.3"
   },
   "eslintConfig": {
-    "env": {
-      "node": true
-    },
     "extends": [
       "eslint:recommended",
       "plugin:@typescript-eslint/eslint-recommended",
@@ -43,7 +40,11 @@
     "plugins": [
       "@typescript-eslint",
       "prettier"
-    ]
+    ],
+    "rules": {
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-use-before-define": "off"
+    }
   },
   "jest": {
     "preset": "ts-jest",
