@@ -84,6 +84,18 @@ function createBaseDeviator<I, O, N, E>() {
       );
     },
 
+    options: function(options) {
+      return this.append(input =>
+        options.includes(input as N & typeof options[number])
+          ? next(input as N & typeof options[number])
+          : err("not_option")
+      );
+    },
+
+    set: function(value) {
+      return this.append(() => next(value));
+    },
+
     string: function() {
       return this.append(input =>
         typeof input === "string" ? next(input) : err("not_string")

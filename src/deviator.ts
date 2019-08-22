@@ -77,6 +77,19 @@ export interface BaseDeviator<I, O, N, E> {
   ): Deviator<I, O | undefined, Exclude<N, undefined>, E>;
 
   /**
+   * Checks whether input value is one of the given options.
+   */
+  options<T>(
+    this: Deviator<I, O, N, E>,
+    options: T[]
+  ): Deviator<I, O, N & T, E | "not_option">;
+
+  /**
+   * Sets the deviated value.
+   */
+  set<T>(this: Deviator<I, O, N, E>, value: T): Deviator<I, O, T, E>;
+
+  /**
    * Checks whether typeof input is `"string"`.
    */
   string(
