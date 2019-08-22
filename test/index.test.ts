@@ -21,3 +21,17 @@ it("trims and converts a string to a float", () => {
     expect(result.value).toBe(expectedError ? "not_a_number" : entry[1]);
   }
 });
+
+it("checks options", () => {
+  const deviation = deviate().options(["hello", "world", 12]);
+
+  expect(deviation("hello").value).toBe("hello");
+  expect(deviation("there").kind).toBe("Err");
+  expect(deviation("there").value).toBe("not_option");
+});
+
+it("sets a value", () => {
+  const deviation = deviate().set("a value");
+
+  expect(deviation("hello").value).toBe("a value");
+});
