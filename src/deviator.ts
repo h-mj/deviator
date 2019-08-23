@@ -17,7 +17,8 @@ export interface Deviation<I, O, N, E> {
  */
 export type Deviator<I, O, N, E> = Deviation<I, O, N, E> &
   BaseDeviator<I, O, N, E> &
-  (N extends string ? StringDeviator<I, O, N, E> : {});
+  (N extends string ? StringDeviator<I, O, N, E> : {}) &
+  (N extends object ? ObjectDeviator<I, O, N, E> : {});
 
 /**
  * Base deviation builder type.
@@ -112,7 +113,46 @@ export interface BaseDeviator<I, O, N, E> {
 }
 
 /**
- * Deviation builder which intermediate value is string.
+ * Type of an object that shapes an object of type `I` into some other object.
+ */
+export type Shape<I extends object> = {
+  [P in keyof I]: Deviation<I[P], unknown, unknown, unknown>;
+};
+
+/**
+ * Result type of shape function with shape typed `S`.
+ */
+export type ShapingResult<S extends Shape<object>> = {
+  [P in keyof S]?: S[P] extends Deviation<unknown, infer O, infer N, unknown>
+    ? O | N
+    : never;
+};
+
+/**
+ * Error type of shape function with shape typed `S`.
+ */
+export type ShapingErrors<S extends Shape<object>> = {
+  [P in keyof S]?: S[P] extends Deviation<unknown, unknown, unknown, infer E>
+    ? E
+    : never;
+};
+
+/**
+ * Deviation builder which intermediate value is an object.
+ */
+export interface ObjectDeviator<I, O, N extends object, E> {
+  /**
+   * Deviates all properties of type `N` into another object using given shape
+   * object.
+   */
+  shape<S extends Shape<N>>(
+    this: Deviator<I, O, N, E>,
+    shape: S
+  ): Deviator<I, O, ShapingResult<S>, E | ShapingErrors<S>>;
+}
+
+/**
+ * Deviation builder which intermediate value is a string.
  */
 export interface StringDeviator<I, O, N extends string, E> {
   /**

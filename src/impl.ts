@@ -1,4 +1,13 @@
-import { BaseDeviator, Deviation, Deviator, StringDeviator } from "./deviator";
+import {
+  BaseDeviator,
+  Deviation,
+  Deviator,
+  ObjectDeviator,
+  Shape,
+  ShapingErrors,
+  ShapingResult,
+  StringDeviator
+} from "./deviator";
 import { err, next, ok } from "./result";
 
 /**
@@ -6,6 +15,7 @@ import { err, next, ok } from "./result";
  */
 const deviatorUnion = {
   ...createBaseDeviator(),
+  ...createObjectDeviator(),
   ...createStringDeviator()
 };
 
@@ -116,6 +126,40 @@ function createBaseDeviator<I, O, N, E>() {
   };
 
   return baseDeviator;
+}
+
+/**
+ * Creates an object that implements all `ObjectDeviator` methods.
+ */
+function createObjectDeviator<I, O, N extends object, E>() {
+  const objectDeviator: ObjectDeviator<I, O, N, E> = {
+    shape: function<S extends Shape<N>>(this: Deviator<I, O, N, E>, shape: S) {
+      return this.append(input => {
+        const value: Partial<ShapingResult<S>> = {};
+        const errors: ShapingErrors<S> = {};
+
+        for (const property in shape) {
+          const result = shape[property](
+            input[property as Extract<keyof N, string>]
+          );
+
+          if (result.kind === "Err") {
+            // @ts-ignore
+            errors[property] = result.value;
+          } else {
+            // @ts-ignore
+            value[property] = result.value;
+          }
+        }
+
+        return Object.entries(errors).length === 0
+          ? next(value as ShapingResult<S>)
+          : err(errors);
+      });
+    }
+  };
+
+  return objectDeviator;
 }
 
 /**
