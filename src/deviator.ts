@@ -123,7 +123,7 @@ export type Shape<I extends object> = {
  * Result type of shape function with shape typed `S`.
  */
 export type ShapingResult<S extends Shape<object>> = {
-  [P in keyof S]?: S[P] extends Deviation<unknown, infer O, infer N, unknown>
+  [P in keyof S]: S[P] extends Deviation<infer _I, infer O, infer N, infer _E>
     ? O | N
     : never;
 };
@@ -132,7 +132,7 @@ export type ShapingResult<S extends Shape<object>> = {
  * Error type of shape function with shape typed `S`.
  */
 export type ShapingErrors<S extends Shape<object>> = {
-  [P in keyof S]?: S[P] extends Deviation<unknown, unknown, unknown, infer E>
+  [P in keyof S]?: S[P] extends Deviation<infer _I, infer _O, infer _N, infer E>
     ? E
     : never;
 };
