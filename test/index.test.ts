@@ -35,3 +35,31 @@ it("sets a value", () => {
 
   expect(deviation("hello").value).toBe("a value");
 });
+
+it("shapes an object", () => {
+  const t = {
+    hello: " 16 ",
+    pi: 16
+  };
+
+  const deviation = deviate<typeof t>().shape({
+    hello: deviate<string>()
+      .trim()
+      .toNumber(),
+    pi: deviate<number>().set("hello")
+  });
+
+  const result = deviation(t);
+
+  expect(result.kind).not.toBe("Err");
+  expect(result.value.hello).toBe(16);
+  expect(result.value.pi).toBe("hello");
+
+  t.hello = "16.a";
+
+  const result2 = deviation(t);
+
+  expect(result2.kind).toBe("Err");
+  expect(result2.value.hello).toBe("not_a_number");
+  expect(result2.value.pi).toBe(undefined);
+});
