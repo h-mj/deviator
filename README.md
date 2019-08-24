@@ -12,7 +12,6 @@ Value transformation and validation library that leverages TypeScript's type sys
 import { deviate } from "deviator";
 
 // Value transformation
-
 const transform = deviate<string>()
   .trim()
   .notEmpty()
