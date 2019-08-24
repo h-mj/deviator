@@ -47,6 +47,13 @@ export interface BaseDeviator<I, O, N, E> {
   ): Deviator<I, O, N & boolean, E | "not_boolean">;
 
   /**
+   * Checks whether input is not `undefined`.
+   */
+  defined(
+    this: Deviator<I, O, N, E>
+  ): Deviator<I, O, Exclude<N, undefined>, E | "undefined">;
+
+  /**
    * Checks whether typeof input is `"function"`.
    */
   function(
@@ -161,6 +168,15 @@ export interface StringDeviator<I, O, N extends string, E> {
   notEmpty(
     this: Deviator<I, O, N, E>
   ): Deviator<I, O, Exclude<N, "">, E | "empty">;
+
+  /**
+   * Replaces search value with specified value.
+   */
+  replace(
+    this: Deviator<I, O, N, E>,
+    searchValue: string | RegExp,
+    replaceValue: string
+  ): Deviator<I, O, string, E>;
 
   /**
    * Converts input string into floating-point value.

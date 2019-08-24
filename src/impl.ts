@@ -62,6 +62,14 @@ function createBaseDeviator<I, O, N, E>() {
       );
     },
 
+    defined: function() {
+      return this.append(input =>
+        input === undefined
+          ? err("undefined")
+          : next(input as Exclude<N, undefined>)
+      );
+    },
+
     function: function() {
       return this.append(input =>
         typeof input === "function" ? next(input) : err("not_function")
@@ -170,6 +178,12 @@ function createStringDeviator<I, O, N extends string, E>() {
     notEmpty: function() {
       return this.append(input =>
         input.length === 0 ? err("empty") : next(input as Exclude<N, "">)
+      );
+    },
+
+    replace: function(searchValue, replaceValue) {
+      return this.append(input =>
+        next(input.replace(searchValue, replaceValue))
       );
     },
 
