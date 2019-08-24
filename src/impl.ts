@@ -90,7 +90,9 @@ function createBaseDeviator<I, O, N, E>() {
 
     object: function() {
       return this.append(input =>
-        typeof input === "object" ? next(input) : err("not_object")
+        typeof input === "object" && input !== null
+          ? next(input as N & object)
+          : err("not_object")
       );
     },
 
@@ -141,14 +143,18 @@ function createBaseDeviator<I, O, N, E>() {
  */
 function createObjectDeviator<I, O, N extends object, E>() {
   const objectDeviator: ObjectDeviator<I, O, N, E> = {
-    shape: function<S extends Shape<N>>(this: Deviator<I, O, N, E>, shape: S) {
+    shape: function<S extends Shape<N, S>>(
+      this: Deviator<I, O, N, E>,
+      shape: S
+    ) {
       return this.append(input => {
         const value: Partial<ShapingResult<S>> = {};
         const errors: ShapingErrors<S> = {};
 
         for (const property in shape) {
           const result = shape[property](
-            input[property as Extract<keyof N, string>]
+            // @ts-ignore
+            input[property]
           );
 
           if (result.kind === "Err") {

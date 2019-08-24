@@ -73,9 +73,11 @@ export interface BaseDeviator<I, O, N, E> {
   ): Deviator<I, O, N & number, E | "not_number">;
 
   /**
-   * Checks whether typeof input is `"object"`.
+   * Checks whether typeof input is `"object"`and value is not `null`.
    */
-  object(this: Deviator<I, O, N, E>): Deviator<I, O, N, E | "not_object">;
+  object(
+    this: Deviator<I, O, N, E>
+  ): Deviator<I, O, N & object, E | "not_object">;
 
   /**
    * Returns input value immediately if it is `undefined`.
@@ -122,14 +124,19 @@ export interface BaseDeviator<I, O, N, E> {
 /**
  * Type of an object that shapes an object of type `I` into some other object.
  */
-export type Shape<I extends object> = {
-  [P in keyof I]: Deviation<I[P], unknown, unknown, unknown>;
+export type Shape<I extends object, S extends Shape<I, S>> = {
+  [P in keyof S]: Deviation<
+    P extends keyof I ? I[P] : unknown,
+    unknown,
+    unknown,
+    unknown
+  >;
 };
 
 /**
  * Result type of shape function with shape typed `S`.
  */
-export type ShapingResult<S extends Shape<object>> = {
+export type ShapingResult<S extends Shape<object, object>> = {
   [P in keyof S]: S[P] extends Deviation<infer _I, infer O, infer N, infer _E>
     ? O | N
     : never;
@@ -138,7 +145,7 @@ export type ShapingResult<S extends Shape<object>> = {
 /**
  * Error type of shape function with shape typed `S`.
  */
-export type ShapingErrors<S extends Shape<object>> = {
+export type ShapingErrors<S extends Shape<object, object>> = {
   [P in keyof S]?: S[P] extends Deviation<infer _I, infer _O, infer _N, infer E>
     ? E
     : never;
@@ -152,7 +159,7 @@ export interface ObjectDeviator<I, O, N extends object, E> {
    * Deviates all properties of type `N` into another object using given shape
    * object.
    */
-  shape<S extends Shape<N>>(
+  shape<S extends Shape<N, S>>(
     this: Deviator<I, O, N, E>,
     shape: S
   ): Deviator<I, O, ShapingResult<S>, E | ShapingErrors<S>>;
