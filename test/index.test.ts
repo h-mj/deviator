@@ -63,3 +63,27 @@ it("shapes an object", () => {
   expect(result2.value.hello).toBe("not_a_number");
   expect(result2.value.pi).toBe(undefined);
 });
+
+it("checks for defined and undefined values", () => {
+  const defined = deviate<string | undefined>().defined();
+  const notDefined = deviate<string | undefined>().undefined();
+
+  expect(defined(undefined).kind).toBe("Err");
+  expect(defined("Hello").kind).not.toBe("Err");
+
+  expect(notDefined(undefined).kind).not.toBe("Err");
+  expect(notDefined("Hello").kind).toBe("Err");
+});
+
+it("replaces substrings", () => {
+  const toNumber = deviate<string>()
+    .replace(",", ".")
+    .trim()
+    .notEmpty()
+    .toNumber();
+
+  expect(toNumber("   12,5   ").value).toBe(12.5);
+  expect(toNumber("   12.5   ").value).toBe(12.5);
+  expect(toNumber("          ").kind).toBe("Err");
+  expect(toNumber("  ,12,12  ").kind).toBe("Err");
+});
