@@ -2,6 +2,7 @@ export {
   BaseDeviator,
   Deviation,
   Deviator,
+  NumberDeviator,
   ObjectDeviator,
   Shape,
   ShapingErrors,

@@ -17,8 +17,9 @@ export interface Deviation<I, O, N, E> {
  */
 export type Deviator<I, O, N, E> = Deviation<I, O, N, E> &
   BaseDeviator<I, O, N, E> &
-  (N extends string ? StringDeviator<I, O, N, E> : {}) &
-  (N extends object ? ObjectDeviator<I, O, N, E> : {});
+  (N extends number ? NumberDeviator<I, O, N, E> : {}) &
+  (N extends object ? ObjectDeviator<I, O, N, E> : {}) &
+  (N extends string ? StringDeviator<I, O, N, E> : {});
 
 /**
  * Base deviation builder type.
@@ -122,6 +123,16 @@ export interface BaseDeviator<I, O, N, E> {
 }
 
 /**
+ * Deviation builder which intermediate value is a number.
+ */
+export interface NumberDeviator<I, O, N extends number, E> {
+  /**
+   * Rounds a number to specified decimal places.
+   */
+  round(this: Deviator<I, O, N, E>, places: number): Deviator<I, O, number, E>;
+}
+
+/**
  * Type of an object that shapes an object of type `I` into some other object.
  */
 export type Shape<I extends object, S extends Shape<I, S>> = {
@@ -170,11 +181,35 @@ export interface ObjectDeviator<I, O, N extends object, E> {
  */
 export interface StringDeviator<I, O, N extends string, E> {
   /**
+   * Checks whether input string contains @ symbol surrounded by at least 1
+   * character on each side.
+   */
+  email(this: Deviator<I, O, N, E>): Deviator<I, O, N, E | "not_email">;
+
+  /**
+   * Checks whether input string is valid GUID.
+   */
+  guid(this: Deviator<I, O, N, E>): Deviator<I, O, N, E | "not_guid">;
+
+  /**
+   * Converts all characters of input string to lowercase.
+   */
+  lowercase(this: Deviator<I, O, N, E>): Deviator<I, O, string, E>;
+
+  /**
    * Checks whether input string is not empty.
    */
   notEmpty(
     this: Deviator<I, O, N, E>
   ): Deviator<I, O, Exclude<N, "">, E | "empty">;
+
+  /**
+   * Checks whether string input matches specified regular expression.
+   */
+  regex(
+    this: Deviator<I, O, N, E>,
+    regex: RegExp
+  ): Deviator<I, O, N, E | "no_regex_match">;
 
   /**
    * Replaces search value with specified value.
@@ -196,4 +231,9 @@ export interface StringDeviator<I, O, N extends string, E> {
    * Trims input string.
    */
   trim(this: Deviator<I, O, N, E>): Deviator<I, O, string, E>;
+
+  /**
+   * Converts all characters of input string to uppercase.
+   */
+  uppercase(this: Deviator<I, O, N, E>): Deviator<I, O, string, E>;
 }

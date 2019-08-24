@@ -2,6 +2,7 @@ import {
   BaseDeviator,
   Deviation,
   Deviator,
+  NumberDeviator,
   ObjectDeviator,
   Shape,
   ShapingErrors,
@@ -15,6 +16,7 @@ import { err, next, ok } from "./result";
  */
 const deviatorUnion = {
   ...createBaseDeviator(),
+  ...createNumberDeviator(),
   ...createObjectDeviator(),
   ...createStringDeviator()
 };
@@ -139,6 +141,19 @@ function createBaseDeviator<I, O, N, E>() {
 }
 
 /**
+ * Creates an object that implements all `NumberDeviator` methods.
+ */
+function createNumberDeviator<I, O, N extends number, E>() {
+  const numberDeviator: NumberDeviator<I, O, N, E> = {
+    round: function(places) {
+      return this.append(input => next(Number(input.toFixed(places))));
+    }
+  };
+
+  return numberDeviator;
+}
+
+/**
  * Creates an object that implements all `ObjectDeviator` methods.
  */
 function createObjectDeviator<I, O, N extends object, E>() {
@@ -180,10 +195,35 @@ function createObjectDeviator<I, O, N extends object, E>() {
  * Creates an object that implements all `StringDeviator` methods.
  */
 function createStringDeviator<I, O, N extends string, E>() {
+  const emailRegex = /^\S+@\S+$/i;
+  const guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
   const stringDeviator: StringDeviator<I, O, N, E> = {
+    guid: function() {
+      return this.append(input =>
+        guidRegex.test(input) ? next(input) : err("not_guid")
+      );
+    },
+
+    email: function() {
+      return this.append(input =>
+        emailRegex.test(input) ? next(input) : err("not_email")
+      );
+    },
+
+    lowercase: function() {
+      return this.append(input => next(input.toLowerCase()));
+    },
+
     notEmpty: function() {
       return this.append(input =>
         input.length === 0 ? err("empty") : next(input as Exclude<N, "">)
+      );
+    },
+
+    regex: function(regex) {
+      return this.append(input =>
+        regex.test(input) ? next(input) : err("no_regex_match")
       );
     },
 
@@ -203,6 +243,10 @@ function createStringDeviator<I, O, N extends string, E>() {
 
     trim: function() {
       return this.append(input => next(input.trim()));
+    },
+
+    uppercase: function() {
+      return this.append(input => next(input.toUpperCase()));
     }
   };
 
