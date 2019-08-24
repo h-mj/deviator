@@ -1,36 +1,44 @@
 # deviator
 
-Value transformation and validation library.
+Value transformation and validation library that leverages TypeScript's type system to provide correct types during deviation creation and for deviation results.
 
-## Example
+## Installation
+
+`$ npm install deviator` or `$ yarn add deviator`
+
+## Usage
 
 ```typescript
 import { deviate } from "deviator";
 
-// Single value transformation
-const deviation = deviate<string>()
+// Value transformation
+
+const transform = deviate<string>()
   .trim()
+  .notEmpty()
+  .replace(",", ".")
   .toNumber();
 
-console.log(deviation("    17     ").value); // prints 17
+console.log(transform(" 12,3")); //=> { kind: 'Next', value: 12.3 }
+console.log(transform(" 12;3")); //=> { kind: 'Err', value: 'not_a_number' }
 
 // Object validation
-const notEmptyValidator = deviate<string>().notEmpty();
 
-const shape = {
-  email: notEmptyValidator,
-  password: notEmptyValidator
-};
+const validate = deviate()
+  .object()
+  .shape({
+    email: deviate()
+      .string()
+      .notEmpty(),
+    pin: deviate().number()
+  });
 
-const credentials = {
-  email: "example@email.com",
-  password: ""
-};
+console.log(validate(12));
+//=> { kind: 'Err', value: 'not_object' }
 
-const validator = deviate<typeof credentials>().shape(shape);
+console.log(validate({ email: 12 }));
+//=> { kind: 'Err', value: { email: 'not_string', pin: 'not_number' } }
 
-const result = validator(credentials);
-
-console.log(result.kind); // prints Err
-console.log(result.value); // prints { password: 'empty' }
+console.log(validate({ email: "a string", pin: 1234 }));
+//=> { kind: 'Next', value: { email: 'a string', pin: 1234 } }
 ```
