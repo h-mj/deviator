@@ -34,6 +34,7 @@ it("sets a value", () => {
   const deviation = deviate().set("a value");
 
   expect(deviation("hello").value).toBe("a value");
+  expect(deviation(12).value).toBe("a value");
 });
 
 it("shapes an object", () => {
@@ -86,4 +87,26 @@ it("replaces substrings", () => {
   expect(toNumber("   12.5   ").value).toBe(12.5);
   expect(toNumber("          ").kind).toBe("Err");
   expect(toNumber("  ,12,12  ").kind).toBe("Err");
+});
+
+it("validates unknown values", () => {
+  const isString = deviate().string();
+
+  expect(isString(12).kind).toBe("Err");
+  expect(isString([]).kind).toBe("Err");
+  expect(isString("hello").kind).not.toBe("Err");
+});
+
+it("validates unknown objects", () => {
+  const areCredentials = deviate()
+    .object()
+    .shape({
+      email: deviate().string(),
+      password: deviate().string()
+    });
+
+  expect(areCredentials(12).kind).toBe("Err");
+  expect(areCredentials({ email: "test@email.com" }).value).toMatchObject({
+    password: "not_string"
+  });
 });
