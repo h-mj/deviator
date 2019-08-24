@@ -92,7 +92,7 @@ export interface BaseDeviator<I, O, N, E> {
    */
   options<T>(
     this: Deviator<I, O, N, E>,
-    options: T[]
+    options: readonly T[]
   ): Deviator<I, O, N & T, E | "not_option">;
 
   /**
