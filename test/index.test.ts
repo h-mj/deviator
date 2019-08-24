@@ -110,3 +110,29 @@ it("validates unknown objects", () => {
     password: "not_string"
   });
 });
+
+it("rounds numbers", () => {
+  const values = {
+    1: 1,
+    1.5e-3: 0,
+    0.02992: 0.03,
+    0.005: 0.01
+  };
+
+  const round = deviate<number>().round(2);
+
+  for (const entry of Object.entries(values)) {
+    expect(round(Number(entry[0])).value).toBe(entry[1]);
+  }
+});
+
+it("lowercases and checks if string looks like an email", () => {
+  const toEmail = deviate<string>()
+    .trim()
+    .lowercase()
+    .email();
+
+  expect(toEmail("test@test.com").kind).not.toBe("Err");
+  expect(toEmail(" Test@test.Com ").value).toBe("test@test.com");
+  expect(toEmail("no at symbol").kind).toBe("Err");
+});
