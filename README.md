@@ -23,22 +23,21 @@ console.log(transform(" 12,3")); //=> { kind: 'Next', value: 12.3 }
 console.log(transform(" 12;3")); //=> { kind: 'Err', value: 'not_a_number' }
 
 // Object validation
-
 const validate = deviate()
   .object()
   .shape({
     email: deviate()
       .string()
-      .notEmpty(),
+      .email(),
     pin: deviate().number()
   });
 
 console.log(validate(12));
 //=> { kind: 'Err', value: 'not_object' }
 
-console.log(validate({ email: 12 }));
-//=> { kind: 'Err', value: { email: 'not_string', pin: 'not_number' } }
+console.log(validate({ email: "email" }));
+//=> { kind: 'Err', value: { email: 'not_email', pin: 'not_number' } }
 
-console.log(validate({ email: "a string", pin: 1234 }));
-//=> { kind: 'Next', value: { email: 'a string', pin: 1234 } }
+console.log(validate({ email: "email@example.com", pin: 1234 }));
+//=> { kind: 'Next', value: { email: 'email@example.com', pin: 1234 } }
 ```
