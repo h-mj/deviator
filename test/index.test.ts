@@ -136,3 +136,41 @@ it("lowercases and checks if string looks like an email", () => {
   expect(toEmail(" Test@test.Com ").value).toBe("test@test.com");
   expect(toEmail("no at symbol").ok).toBe(false);
 });
+
+it("runs example", () => {
+  const transform = deviate<string>()
+    .trim()
+    .notEmpty()
+    .replace(",", ".")
+    .toNumber();
+
+  console.log(transform(" 12,3")); // { kind: 'Next', ok: true, value: 12.3 }
+  console.log(transform(" 12;3")); // { kind: 'Err', ok: false, value: 'not_a_number' }
+
+  // Object validation
+  const validate = deviate()
+    .object()
+    .shape({
+      email: deviate()
+        .string()
+        .email(),
+      pin: deviate().number()
+    });
+
+  console.log(validate(12));
+  // { kind: 'Err', ok: false, value: 'not_object' }
+
+  console.log(validate({ email: "email" }));
+  // {
+  //   kind: 'Err',
+  //   ok: false,
+  //   value: { email: 'not_email', pin: 'not_number' }
+  // }
+
+  console.log(validate({ email: "email@example.com", pin: 1234 }));
+  // {
+  //   kind: 'Next',
+  //   ok: true,
+  //   value: { email: 'email@example.com', pin: 1234 }
+  // }
+});
