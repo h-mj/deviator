@@ -1,4 +1,4 @@
-import { deviate } from "../src";
+import { deviate, err } from "../src";
 
 it("trims and converts a string to a float", () => {
   const deviation = deviate<string>()
@@ -126,7 +126,7 @@ it("rounds numbers", () => {
   }
 });
 
-it("lowercases and checks if string looks like an email", () => {
+it("converts to lower case and checks if string looks like an email", () => {
   const toEmail = deviate<string>()
     .trim()
     .lowercase()
@@ -178,4 +178,20 @@ it("runs example", () => {
     ok: true,
     value: { email: "email@example.com", pin: 1234 }
   });
+});
+
+it("appends deviations", () => {
+  const parseFloatRound = deviate<string>()
+    .trim()
+    .notEmpty()
+    .toNumber()
+    .round(0);
+
+  const unknownParseFloatRound = deviate()
+    .string()
+    .append(parseFloatRound);
+
+  expect(unknownParseFloatRound([]).ok).toBe(false);
+  expect(unknownParseFloatRound("Hello").ok).toBe(false);
+  expect(unknownParseFloatRound(" 12.5 ").value).toBe(13);
 });
