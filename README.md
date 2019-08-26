@@ -45,10 +45,7 @@ interface Credentials {
 }
 
 const validate = deviate<Credentials>().shape({
-  email: deviate<string>()
-    .trim()
-    .lowercase()
-    .email(),
+  email: deviate<string>().trim().lowercase().email(),
   password: deviate<string>().notEmpty()
 });
 
@@ -64,16 +61,10 @@ console.log(validate({ email: " Hello@There.com ", password: "secret" }));
 ```typescript
 import { deviate } from "deviator";
 
-const validate = deviate()
-  .object()
-  .shape({
-    id: deviate()
-      .string()
-      .guid(),
-    amount: deviate()
-      .number()
-      .round(2)
-  });
+const validate = deviate().object().shape({
+  id: deviate().string().guid(),
+  amount: deviate().number().round(2)
+});
 
 console.log(validate("A random string"));
 // { kind: 'Err', ok: false, value: 'not_object' }
@@ -81,9 +72,7 @@ console.log(validate("A random string"));
 console.log(validate({ id: undefined, amount: 12 }));
 // { kind: 'Err', ok: false, value: { id: 'not_string' } }
 
-console.log(
-  validate({ id: "80ceadad-f9ab-44b4-b11e-940cc1cd85aa", amount: 20 })
-);
+console.log(validate({ id: "80ceadad-f9ab-44b4-b11e-940cc1cd85aa", amount: 20 }));
 // { kind: 'Ok', ok: true, value: { id: '80ceadad-f9ab-44b4-b11e-940cc1cd85aa', amount: 20 } }
 ```
 
@@ -95,14 +84,7 @@ import { deviate, ok } from "deviator";
 const squareAndReverse = deviate<number>()
   .append(input => ok(input * input))
   .append(input => ok(input.toString()))
-  .append(input =>
-    ok(
-      input
-        .split("")
-        .reverse()
-        .join("")
-    )
-  );
+  .append(input => ok(input.split("").reverse().join("")));
 
 console.log(squareAndReverse(10)); // { kind: 'Ok', ok: true, value: '001' }
 ```
