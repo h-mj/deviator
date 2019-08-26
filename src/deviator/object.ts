@@ -5,7 +5,7 @@ import { Deviation, Deviator } from ".";
  * Type of an object that shapes an object of type `I` into some other object.
  */
 // prettier-ignore
-export type Shape<O extends object, S extends Shape<O, S>> = {
+type Shape<O extends object, S extends Shape<O, S>> = {
   [P in keyof S]: Deviation<P extends keyof O ? O[P] : unknown, unknown, unknown, unknown>;
 };
 
@@ -13,7 +13,7 @@ export type Shape<O extends object, S extends Shape<O, S>> = {
  * Result type of shape function with shape typed `S`.
  */
 // prettier-ignore
-export type ShapingResult<S extends Shape<object, object>> = {
+type ShapingResult<S extends Shape<object, object>> = {
   [P in keyof S]: S[P] extends Deviation<infer _I, infer O, infer N, infer _E> ? O | N : never;
 };
 
@@ -21,7 +21,7 @@ export type ShapingResult<S extends Shape<object, object>> = {
  * Error type of shape function with shape typed `S`.
  */
 // prettier-ignore
-export type ShapingErrors<S extends Shape<object, object>> = {
+type ShapingErrors<S extends Shape<object, object>> = {
   [P in keyof S]?: S[P] extends Deviation<infer _I, infer _O, infer _N, infer E> ? E : never;
 };
 
@@ -33,7 +33,7 @@ export class ObjectDeviator<I, O extends object, N, E> {
    * Deviates all properties of type `N` into another object using given shape
    * object.
    */
-  shape<S extends Shape<O, S>>(this: Deviator<I, O, N, E>, shape: S) {
+  public shape<S extends Shape<O, S>>(this: Deviator<I, O, N, E>, shape: S) {
     return this.append(input => {
       const value: Partial<ShapingResult<S>> = {};
       const errors: ShapingErrors<S> = {};

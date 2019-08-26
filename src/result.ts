@@ -5,7 +5,7 @@
 export type Now<N> = { kind: "Now"; ok: true; value: N };
 
 /**
- * Creates `Now<O>` typed result object.
+ * Creates `Now<N>` typed result object.
  */
 export const now = <N>(value: N): Now<N> => ({ kind: "Now", ok: true, value });
 

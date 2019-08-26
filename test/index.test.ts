@@ -1,4 +1,4 @@
-import { deviate, err } from "../src";
+import { deviate } from "../src";
 
 it("trims and converts a string to a float", () => {
   const deviation = deviate<string>()
