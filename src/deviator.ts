@@ -28,7 +28,7 @@ export interface BaseDeviator<I, O, N, E> {
   /**
    * Appends a custom deviation to the deviator.
    */
-  append<O2, N2, E2>(
+  append<O2 = never, N2 = never, E2 = never>(
     this: Deviator<I, O, N, E>,
     deviation: Deviation<N, O2, N2, E2>
   ): Deviator<I, O | O2, N2, E | E2>;
