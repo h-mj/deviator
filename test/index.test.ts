@@ -1,5 +1,28 @@
 import { deviate } from "../src";
 
+it("validates types", () => {
+  // prettier-ignore
+  const tests = [
+    [deviate().bigint(), BigInt(10000), BigInt(1200), BigInt(0)],
+    [deviate().boolean(), true, false],
+    [deviate().function(), () => "Hello", function() { return "World"; }],
+    [deviate().null(), null],
+    [deviate().number(), 12, 1000, 1e5],
+    [deviate().object(), {}, { hello: "There" }, new Object()],
+    [deviate().string(), "Hello", "", `${12}`],
+    [deviate().symbol(), Symbol("Sybol"), Symbol()],
+    [deviate().undefined(), undefined]
+  ] as const;
+
+  for (const [deviator] of tests) {
+    for (const [typeDeviator, ...values] of tests) {
+      for (const value of values) {
+        expect(deviator(value).ok).toBe(deviator === typeDeviator);
+      }
+    }
+  }
+});
+
 it("trims and converts a string to a float", () => {
   const deviation = deviate<string>()
     .trim()
