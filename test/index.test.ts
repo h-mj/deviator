@@ -180,6 +180,46 @@ it("runs example", () => {
   });
 });
 
+it("validates object containing GUID string", () => {
+  const validate = deviate()
+    .object()
+    .shape({
+      id: deviate()
+        .string()
+        .guid()
+        .uppercase(),
+      amount: deviate()
+        .number()
+        .round(2),
+      metric: deviate().boolean()
+    });
+
+  expect(validate("A random string")).toMatchObject({
+    ok: false,
+    value: "not_object"
+  });
+
+  expect(validate({ id: "123456789", amount: 12 })).toMatchObject({
+    ok: false,
+    value: { id: "not_guid", metric: "not_boolean" }
+  });
+
+  expect(
+    validate({
+      id: "80ceadad-f9ab-44b4-b11e-940cc1cd85aa",
+      amount: 20,
+      metric: false
+    })
+  ).toMatchObject({
+    ok: true,
+    value: {
+      id: "80CEADAD-F9AB-44B4-B11E-940CC1CD85AA",
+      amount: 20,
+      metric: false
+    }
+  });
+});
+
 it("appends deviations", () => {
   const parseFloatRound = deviate<string>()
     .trim()
@@ -194,4 +234,63 @@ it("appends deviations", () => {
   expect(unknownParseFloatRound([]).ok).toBe(false);
   expect(unknownParseFloatRound("Hello").ok).toBe(false);
   expect(unknownParseFloatRound(" 12.5 ").value).toBe(13);
+});
+
+it("allows optional values", () => {
+  const optionalRegex = deviate<string | undefined>()
+    .optional()
+    .regex(/^a*$/i);
+
+  expect(optionalRegex(undefined).ok).toBe(true);
+  expect(optionalRegex("bbb").ok).toBe(false);
+  expect(optionalRegex("").value).toBe("");
+  expect(optionalRegex("aaaa").value).toBe("aaaa");
+});
+
+it("checks strict equality", () => {
+  const equalityTests = [
+    ["Hello", "World", false],
+    [12, 41, false],
+    [[], [], false],
+    [{}, {}, false],
+    [false, false, true],
+    ["Hello", "Hello", true]
+  ] as const;
+
+  for (const [v1, v2, equality] of equalityTests) {
+    const equals = deviate<typeof v1>().equals(v2);
+    const notEquals = deviate<typeof v1>().notEquals(v2);
+
+    expect(equals(v1).ok).toBe(equality);
+    expect(equals(v1).ok).not.toBe(notEquals(v1).ok);
+  }
+});
+
+it("checks numeric inequality", () => {
+  const inequalityTests = [
+    [12, 12],
+    [12, 13],
+    [100, 100],
+    [0.5, 0.5],
+    [75, 60],
+    [-50, 30]
+  ];
+
+  for (const [v1, v2] of inequalityTests) {
+    const eq = deviate<number>().equals(v2);
+    const ne = deviate<number>().notEquals(v2);
+    const lt = deviate<number>().lt(v2);
+    const le = deviate<number>().le(v2);
+    const gt = deviate<number>().gt(v2);
+    const ge = deviate<number>().ge(v2);
+
+    expect(eq(v1).ok).toBe(v1 === v2);
+    expect(lt(v1).ok).toBe(v1 < v2);
+    expect(eq(v1).ok).not.toBe(ne(v1).ok);
+    expect(eq(v1).ok).not.toBe(lt(v1).ok || gt(v1).ok);
+    expect(eq(v1).ok || lt(v1).ok).toBe(le(v1).ok);
+    expect(eq(v1).ok || lt(v1).ok).not.toBe(gt(v1).ok);
+    expect(eq(v1).ok || gt(v1).ok).toBe(ge(v1).ok);
+    expect(eq(v1).ok || gt(v1).ok).not.toBe(lt(v1).ok);
+  }
 });
