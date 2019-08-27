@@ -50,6 +50,26 @@ export class BaseDeviator<I, O, N, E> {
   }
 
   /**
+   * Checks whether input strictly equals specified value.
+   */
+  public equals<T>(this: Deviator<I, O, N, E>, value: T) {
+    return this.append(input =>
+      (input as O & T) === value
+        ? ok(input as O & T)
+        : err("not_equal" as const)
+    );
+  }
+
+  /**
+   * Checks whether input strictly does not equal specified value.
+   */
+  public notEquals<T>(this: Deviator<I, O, N, E>, value: T) {
+    return this.append(input =>
+      (input as O & T) !== value ? ok(input) : err("equal" as const)
+    );
+  }
+
+  /**
    * Checks whether typeof input is `"function"`.
    */
   public function(this: Deviator<I, O, N, E>) {
