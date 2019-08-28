@@ -17,6 +17,15 @@ export interface Deviation<I, O, N, E> {
 }
 
 /**
+ * Intersection of all types of deviators.
+ */
+// prettier-ignore
+type TypeDeviator<I, O, N, E> =
+  (O extends number ? NumberDeviator<I, O, N, E> : {}) &
+  (O extends object ? ObjectDeviator<I, O, N, E> : {}) &
+  (O extends string ? StringDeviator<I, O, N, E> : {});
+
+/**
  * If type `N` is `never`, equals to type `T`, otherwise to type `F`.
  */
 type IfNever<N, T, F> = [N] extends [never] ? T : F;
@@ -26,9 +35,7 @@ type IfNever<N, T, F> = [N] extends [never] ? T : F;
  */
 export type Deviator<I, O, N, E> = Deviation<I, O, N, E> &
   BaseDeviator<I, O, N, E> &
-  IfNever<O, {}, O extends number ? NumberDeviator<I, O, N, E> : {}> &
-  IfNever<O, {}, O extends object ? ObjectDeviator<I, O, N, E> : {}> &
-  IfNever<O, {}, O extends string ? StringDeviator<I, O, N, E> : {}>;
+  IfNever<O, {}, TypeDeviator<I, O, N, E>>;
 
 /**
  * Combines all properties except constructors of all given prototypes.

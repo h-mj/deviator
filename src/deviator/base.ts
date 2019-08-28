@@ -1,5 +1,5 @@
 import { err, now, ok } from "../result";
-import { Deviation, Deviator, deviator } from ".";
+import { Deviation, Deviator, deviator } from "./deviator";
 
 /**
  * Deviation builder which intermediate result type can be anything.
@@ -9,7 +9,7 @@ export class BaseDeviator<I, O, N, E> {
    * Appends a custom deviation to the deviator.
    */
   public append<O2 = never, N2 = never, E2 = never>(
-    this: Deviator<I, O, N, E>,
+    this: Deviation<I, O, N, E>,
     deviation: Deviation<O, O2, N2, E2>
   ) {
     const composition: Deviation<I, O2, N | N2, E | E2> = input => {

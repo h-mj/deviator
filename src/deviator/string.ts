@@ -1,5 +1,5 @@
 import { err, ok } from "../result";
-import { Deviator } from ".";
+import { Deviator } from "./deviator";
 
 /**
  * Regular expression that matches any string that contains an `@` symbol

@@ -1,5 +1,5 @@
 import { err, ok } from "../result";
-import { Deviator } from ".";
+import { Deviator } from "./deviator";
 
 /**
  * Deviation builder which intermediate value is a number.

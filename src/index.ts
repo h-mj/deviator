@@ -1,2 +1,2 @@
-export { deviate } from "./deviator";
+export { deviate } from "./deviator/deviator";
 export { err, ok, now } from "./result";
