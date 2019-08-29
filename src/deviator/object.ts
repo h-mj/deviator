@@ -1,5 +1,5 @@
 import { err, ok } from "../result";
-import { Deviation, Deviator } from ".";
+import { Deviation, Deviator, Failure, Success } from ".";
 
 /**
  * Type of an object that shapes an object of type `I` into some other object.
@@ -12,17 +12,15 @@ type Shape<O extends object, S extends Shape<O, S>> = {
 /**
  * Result type of shape function with shape typed `S`.
  */
-// prettier-ignore
 type ShapingResult<S extends Shape<object, object>> = {
-  [P in keyof S]: S[P] extends Deviation<infer _I, infer O, infer N, infer _E> ? O | N : never;
+  [P in keyof S]: Success<S[P]>;
 };
 
 /**
  * Error type of shape function with shape typed `S`.
  */
-// prettier-ignore
 type ShapingErrors<S extends Shape<object, object>> = {
-  [P in keyof S]?: S[P] extends Deviation<infer _I, infer _O, infer _N, infer E> ? E : never;
+  [P in keyof S]?: Failure<S[P]>;
 };
 
 /**

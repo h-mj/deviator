@@ -17,6 +17,30 @@ export interface Deviation<I, O, N, E> {
 }
 
 /**
+ * Successful deviation value type.
+ */
+export type Success<D> = D extends Deviation<
+  infer _I,
+  infer O,
+  infer N,
+  infer _E
+>
+  ? O | N
+  : never;
+
+/**
+ * Failed deviation value type.
+ */
+export type Failure<D> = D extends Deviation<
+  infer _I,
+  infer _O,
+  infer _N,
+  infer E
+>
+  ? E
+  : never;
+
+/**
  * If type `N` is `never`, equals to type `T`, otherwise to type `F`.
  */
 type IfNever<N, T, F> = [N] extends [never] ? T : F;
