@@ -1,5 +1,5 @@
 import { err, ok } from "../result";
-import { Deviation, Deviator } from "./deviator";
+import { Deviation, Deviator } from ".";
 
 /**
  * Type of an object that shapes an object of type `I` into some other object.
