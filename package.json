@@ -1,6 +1,6 @@
 {
   "name": "deviator",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Transformation and validation library",
   "repository": {
     "type": "git",
