@@ -30,7 +30,7 @@ const toInteger = deviate<string>()
   .toNumber()
   .round(0);
 
-console.log(toInteger("  Hello  ")); // { kind: 'Err', ok: false, value: 'not_a_number' }
+console.log(toInteger("  Hello  ")); // { kind: 'Err', ok: false, value: 'NaN' }
 console.log(toInteger("   12,5  ")); // { kind: 'Ok', ok: true, value: 13 }
 ```
 
@@ -50,7 +50,7 @@ const validate = deviate<Credentials>().shape({
 });
 
 console.log(validate({ email: "raw input", password: "" }));
-// { kind: 'Err', ok: false, value: { email: 'not_email', password: 'empty' } }
+// { kind: 'Err', ok: false, value: { email: 'notEmail', password: 'empty' } }
 
 console.log(validate({ email: " Hello@There.com ", password: "secret" }));
 // { kind: 'Ok', ok: true, value: { email: 'hello@there.com', password: 'secret' } }
@@ -67,10 +67,10 @@ const validate = deviate().object().shape({
 });
 
 console.log(validate("A random string"));
-// { kind: 'Err', ok: false, value: 'not_object' }
+// { kind: 'Err', ok: false, value: 'notObject' }
 
 console.log(validate({ id: undefined, amount: 12 }));
-// { kind: 'Err', ok: false, value: { id: 'not_string' } }
+// { kind: 'Err', ok: false, value: { id: 'notString' } }
 
 console.log(validate({ id: "80ceadad-f9ab-44b4-b11e-940cc1cd85aa", amount: 20 }));
 // { kind: 'Ok', ok: true, value: { id: '80ceadad-f9ab-44b4-b11e-940cc1cd85aa', amount: 20 } }
