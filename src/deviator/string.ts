@@ -1,5 +1,5 @@
 import { err, ok } from "../result";
-import { Deviator } from ".";
+import { Deviator } from "./";
 
 /**
  * Regular expression that matches any string that contains an `@` symbol
@@ -24,7 +24,7 @@ export class StringDeviator<I, O extends string, N, E> {
    */
   public email(this: Deviator<I, O, N, E>) {
     return this.append(input =>
-      EMAIL_REGEX.test(input) ? ok(input) : err("not_email" as const)
+      EMAIL_REGEX.test(input) ? ok(input) : err("notEmail" as const)
     );
   }
 
@@ -33,7 +33,7 @@ export class StringDeviator<I, O extends string, N, E> {
    */
   public guid(this: Deviator<I, O, N, E>) {
     return this.append(input =>
-      GUID_REGEX.test(input) ? ok(input) : err("not_guid" as const)
+      GUID_REGEX.test(input) ? ok(input) : err("notGuid" as const)
     );
   }
 
@@ -58,7 +58,7 @@ export class StringDeviator<I, O extends string, N, E> {
    */
   public regex(this: Deviator<I, O, N, E>, regex: RegExp) {
     return this.append(input =>
-      regex.test(input) ? ok(input) : err("no_regex_match" as const)
+      regex.test(input) ? ok(input) : err("noRegexMatch" as const)
     );
   }
 
@@ -79,7 +79,7 @@ export class StringDeviator<I, O extends string, N, E> {
   public toNumber(this: Deviator<I, O, N, E>) {
     return this.append(input => {
       const value = Number(input);
-      return Number.isNaN(value) ? err("not_a_number" as const) : ok(value);
+      return Number.isNaN(value) ? err("NaN" as const) : ok(value);
     });
   }
 

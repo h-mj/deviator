@@ -41,7 +41,7 @@ it("trims and converts a string to a float", () => {
     const expectedError = entry[1] === false;
 
     expect(result.ok).toBe(!expectedError);
-    expect(result.value).toBe(expectedError ? "not_a_number" : entry[1]);
+    expect(result.value).toBe(expectedError ? "NaN" : entry[1]);
   }
 });
 
@@ -50,7 +50,7 @@ it("checks options", () => {
 
   expect(deviation("hello").value).toBe("hello");
   expect(deviation("there").ok).toBe(false);
-  expect(deviation("there").value).toBe("not_option");
+  expect(deviation("there").value).toBe("notOption");
 });
 
 it("sets a value", () => {
@@ -84,7 +84,7 @@ it("shapes an object", () => {
   const result2 = deviation(t);
 
   expect(result2.ok).toBe(false);
-  expect(result2.value.hello).toBe("not_a_number");
+  expect(result2.value.hello).toBe("NaN");
   expect(result2.value.pi).toBe(undefined);
 });
 
@@ -130,7 +130,7 @@ it("validates unknown objects", () => {
 
   expect(areCredentials(12).ok).toBe(false);
   expect(areCredentials({ email: "test@email.com" }).value).toMatchObject({
-    password: "not_string"
+    password: "notString"
   });
 });
 
@@ -174,7 +174,7 @@ it("runs example", () => {
 
   expect(transform(" 12;3")).toMatchObject({
     ok: false,
-    value: "not_a_number"
+    value: "NaN"
   });
 
   // Object validation
@@ -189,12 +189,12 @@ it("runs example", () => {
 
   expect(validate(12)).toMatchObject({
     ok: false,
-    value: "not_object"
+    value: "notObject"
   });
 
   expect(validate({ email: "email" })).toMatchObject({
     ok: false,
-    value: { email: "not_email", pin: "not_number" }
+    value: { email: "notEmail", pin: "notNumber" }
   });
 
   expect(validate({ email: "email@example.com", pin: 1234 })).toMatchObject({
@@ -219,12 +219,12 @@ it("validates object containing GUID string", () => {
 
   expect(validate("A random string")).toMatchObject({
     ok: false,
-    value: "not_object"
+    value: "notObject"
   });
 
   expect(validate({ id: "123456789", amount: 12 })).toMatchObject({
     ok: false,
-    value: { id: "not_guid", metric: "not_boolean" }
+    value: { id: "notGuid", metric: "notBoolean" }
   });
 
   expect(

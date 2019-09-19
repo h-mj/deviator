@@ -1,5 +1,5 @@
 import { err, now, ok } from "../result";
-import { Deviation, Deviator, deviator } from ".";
+import { Deviation, Deviator, deviator } from "./";
 
 /**
  * Deviation builder which intermediate result type can be anything.
@@ -25,7 +25,7 @@ export class BaseDeviator<I, O, N, E> {
    */
   public bigint(this: Deviator<I, O, N, E>) {
     return this.append(input =>
-      typeof input === "bigint" ? ok(input) : err("not_bigint" as const)
+      typeof input === "bigint" ? ok(input) : err("notBigInt" as const)
     );
   }
 
@@ -34,7 +34,7 @@ export class BaseDeviator<I, O, N, E> {
    */
   public boolean(this: Deviator<I, O, N, E>) {
     return this.append(input =>
-      typeof input === "boolean" ? ok(input) : err("not_boolean" as const)
+      typeof input === "boolean" ? ok(input) : err("notBoolean" as const)
     );
   }
 
@@ -54,9 +54,7 @@ export class BaseDeviator<I, O, N, E> {
    */
   public equals<T>(this: Deviator<I, O, N, E>, value: T) {
     return this.append(input =>
-      (input as O & T) === value
-        ? ok(input as O & T)
-        : err("not_equal" as const)
+      (input as O & T) === value ? ok(input as O & T) : err("notEqual" as const)
     );
   }
 
@@ -74,7 +72,7 @@ export class BaseDeviator<I, O, N, E> {
    */
   public function(this: Deviator<I, O, N, E>) {
     return this.append(input =>
-      typeof input === "function" ? ok(input) : err("not_function" as const)
+      typeof input === "function" ? ok(input) : err("notFunction" as const)
     );
   }
 
@@ -83,7 +81,7 @@ export class BaseDeviator<I, O, N, E> {
    */
   public null(this: Deviator<I, O, N, E>) {
     return this.append(input =>
-      input === null ? ok(null) : err("not_null" as const)
+      input === null ? ok(null) : err("notNull" as const)
     );
   }
 
@@ -92,7 +90,7 @@ export class BaseDeviator<I, O, N, E> {
    */
   public number(this: Deviator<I, O, N, E>) {
     return this.append(input =>
-      typeof input === "number" ? ok(input) : err("not_number" as const)
+      typeof input === "number" ? ok(input) : err("notNumber" as const)
     );
   }
 
@@ -103,7 +101,7 @@ export class BaseDeviator<I, O, N, E> {
     return this.append(input =>
       typeof input === "object" && input !== null
         ? ok(input as O & object)
-        : err("not_object" as const)
+        : err("notObject" as const)
     );
   }
 
@@ -123,7 +121,7 @@ export class BaseDeviator<I, O, N, E> {
     return this.append(input =>
       options.includes(input as O & T)
         ? ok(input as O & T)
-        : err("not_option" as const)
+        : err("notOption" as const)
     );
   }
 
@@ -139,7 +137,7 @@ export class BaseDeviator<I, O, N, E> {
    */
   public string(this: Deviator<I, O, N, E>) {
     return this.append(input =>
-      typeof input === "string" ? ok(input) : err("not_string" as const)
+      typeof input === "string" ? ok(input) : err("notString" as const)
     );
   }
 
@@ -148,7 +146,7 @@ export class BaseDeviator<I, O, N, E> {
    */
   public symbol(this: Deviator<I, O, N, E>) {
     return this.append(input =>
-      typeof input === "symbol" ? ok(input) : err("not_symbol" as const)
+      typeof input === "symbol" ? ok(input) : err("notSymbol" as const)
     );
   }
 
@@ -157,7 +155,7 @@ export class BaseDeviator<I, O, N, E> {
    */
   public undefined(this: Deviator<I, O, N, E>) {
     return this.append(input =>
-      input === undefined ? ok(undefined) : err("not_undefined" as const)
+      input === undefined ? ok(undefined) : err("notUndefined" as const)
     );
   }
 }

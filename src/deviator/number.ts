@@ -1,5 +1,5 @@
 import { err, ok } from "../result";
-import { Deviator } from ".";
+import { Deviator } from "./";
 
 /**
  * Deviation builder which intermediate value is a number.
@@ -10,7 +10,7 @@ export class NumberDeviator<I, O extends number, N, E> {
    */
   public ge(this: Deviator<I, O, N, E>, value: number) {
     return this.append(input =>
-      input >= value ? ok(input) : err("less_than" as const)
+      input >= value ? ok(input) : err("lessThan" as const)
     );
   }
 
@@ -19,7 +19,7 @@ export class NumberDeviator<I, O extends number, N, E> {
    */
   public gt(this: Deviator<I, O, N, E>, value: number) {
     return this.append(input =>
-      input > value ? ok(input) : err("less_than_or_equals" as const)
+      input > value ? ok(input) : err("lessThanOrEquals" as const)
     );
   }
 
@@ -28,7 +28,7 @@ export class NumberDeviator<I, O extends number, N, E> {
    */
   public le(this: Deviator<I, O, N, E>, value: number) {
     return this.append(input =>
-      input <= value ? ok(input) : err("greater_than" as const)
+      input <= value ? ok(input) : err("greaterThan" as const)
     );
   }
 
@@ -37,7 +37,7 @@ export class NumberDeviator<I, O extends number, N, E> {
    */
   public lt(this: Deviator<I, O, N, E>, value: number) {
     return this.append(input =>
-      input < value ? ok(input) : err("greater_than_or_equals" as const)
+      input < value ? ok(input) : err("greaterThanOrEquals" as const)
     );
   }
 
