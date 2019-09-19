@@ -1,4 +1,4 @@
-import { deviate } from "../src";
+import { deviate, ok } from "../src";
 
 it("validates types", () => {
   // prettier-ignore
@@ -10,7 +10,7 @@ it("validates types", () => {
     [deviate().number(), 12, 1000, 1e5],
     [deviate().object(), {}, { hello: "There" }, new Object()],
     [deviate().string(), "Hello", "", `${12}`],
-    [deviate().symbol(), Symbol("Sybol"), Symbol()],
+    [deviate().symbol(), Symbol("Symbol"), Symbol()],
     [deviate().undefined(), undefined]
   ] as const;
 
@@ -315,5 +315,24 @@ it("checks numeric inequality", () => {
     expect(eq(v1).ok || lt(v1).ok).not.toBe(gt(v1).ok);
     expect(eq(v1).ok || gt(v1).ok).toBe(ge(v1).ok);
     expect(eq(v1).ok || gt(v1).ok).not.toBe(lt(v1).ok);
+  }
+});
+
+it("correctly types custom deviations within shape deviations", () => {
+  const deviation = deviate()
+    .object()
+    .shape({
+      name: deviate()
+        .string()
+        .append(input => ok(input))
+    });
+
+  const result = deviation({ name: "Hello" });
+
+  expect(result.ok).toBe(true);
+
+  if (result.ok) {
+    // value.name is inferred to be a string.
+    expect(result.value.name.trim().length).toBe(5);
   }
 });
