@@ -1,2 +1,2 @@
 export { deviate, Success, Failure } from "./deviator";
-export { err, ok, now } from "./result";
+export { err, Err, ok, Ok, now, Now } from "./result";

@@ -1,12 +1,18 @@
 import { err, ok } from "../result";
-import { Deviation, Deviator, Failure, Success } from ".";
+import { Deviation, Deviator, Failure, Success } from "./";
 
 /**
- * Type of an object that shapes an object of type `I` into some other object.
+ * Type of an object that shapes an object of type `O` into some other object.
  */
-// prettier-ignore
 type Shape<O extends object, S extends Shape<O, S>> = {
-  [P in keyof S]: Deviation<P extends keyof O ? O[P] : unknown, unknown, unknown, unknown>;
+  [P in keyof S]: S[P] extends Deviation<
+    P extends keyof O ? O[P] : unknown,
+    unknown,
+    unknown,
+    unknown
+  >
+    ? S[P]
+    : never;
 };
 
 /**
@@ -37,10 +43,8 @@ export class ObjectDeviator<I, O extends object, N, E> {
       const errors: ShapingErrors<S> = {};
 
       for (const property in shape) {
-        const result = shape[property](
-          // @ts-ignore
-          input[property]
-        );
+        // @ts-ignore
+        const result = shape[property](input[property]);
 
         if (result.kind === "Err") {
           // @ts-ignore
