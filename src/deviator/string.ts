@@ -61,6 +61,7 @@ export class StringDeviator<I, O extends string, N, E> {
       input.length <= value ? ok(input) : err("greaterThan")
     );
   }
+
   /**
    * Checks whether input string length is at least specified value.
    */
