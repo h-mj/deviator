@@ -336,3 +336,35 @@ it("correctly types custom deviations within shape deviations", () => {
     expect(result.value.name.trim().length).toBe(5);
   }
 });
+
+it("correctly checks string lengths", () => {
+  // array of string, correct minimum, incorrect minimum, correct maximum, incorrect maximum.
+  const tests = [
+    ["hello", 4, 8, 10, 3],
+    ["there", 4, 8, 10, 3],
+    ["", 0, 1, 0, -1],
+    ["wow", 2, 8, 10, 2],
+    ["where they at doe?", 16, 100, 20, 10],
+    ["random string that is totally not random", 20, 100, 100, 20]
+  ] as const;
+
+  // prettier-ignore
+  for (const [string, validMin, invalidMin, validMax, invalidMax] of tests) {
+    const validLenDeviator = deviate().string().len(string.length);
+    const invalidLenDeviator = deviate().string().len(string.length - 1);
+    const validMinValidator = deviate().string().minLen(validMin);
+    const invalidMinValidator = deviate().string().minLen(invalidMin);
+    const validMaxValidator = deviate().string().maxLen(validMax);
+    const invalidMaxValidator = deviate().string().maxLen(invalidMax);
+
+    expect(validLenDeviator(string).ok).toBe(true);
+    expect(validLenDeviator(string).value).toBe(string);
+    expect(invalidLenDeviator(string).ok).toBe(false);
+    expect(validMinValidator(string).ok).toBe(true);
+    expect(validMinValidator(string).value).toBe(string);
+    expect(invalidMinValidator(string).ok).toBe(false);
+    expect(validMaxValidator(string).ok).toBe(true);
+    expect(validMaxValidator(string).value).toBe(string);
+    expect(invalidMaxValidator(string).ok).toBe(false);
+  }
+});

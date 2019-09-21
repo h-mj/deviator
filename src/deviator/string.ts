@@ -38,10 +38,36 @@ export class StringDeviator<I, O extends string, N, E> {
   }
 
   /**
+   * Checks whether input string length is equal to specified value.
+   */
+  public len(this: Deviator<I, O, N, E>, value: number) {
+    return this.append(input =>
+      input.length === value ? ok(input) : err("notEqual")
+    );
+  }
+
+  /**
    * Converts all characters of input string to lowercase.
    */
   public lowercase(this: Deviator<I, O, N, E>) {
     return this.append(input => ok(input.toLowerCase()));
+  }
+
+  /**
+   * Checks whether input string length is at most specified value.
+   */
+  public maxLen(this: Deviator<I, O, N, E>, value: number) {
+    return this.append(input =>
+      input.length <= value ? ok(input) : err("greaterThan")
+    );
+  }
+  /**
+   * Checks whether input string length is at least specified value.
+   */
+  public minLen(this: Deviator<I, O, N, E>, value: number) {
+    return this.append(input =>
+      input.length >= value ? ok(input) : err("lessThan")
+    );
   }
 
   /**
