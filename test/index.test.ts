@@ -86,3 +86,37 @@ it("checks string length", () => {
   expect(isPin("12345")).toMatchObject({ ok: false, value: "length" });
   expect(isPin("abcd")).toMatchObject({ ok: false, value: "regexp" });
 });
+
+it("validates objects", () => {
+  const validCredentials = deviate()
+    .object()
+    .shape({
+      email: deviate()
+        .string()
+        .email(),
+      password: deviate()
+        .string()
+        .minLength(8)
+    });
+
+  expect(validCredentials("Hello")).toMatchObject({
+    ok: false,
+    value: "object"
+  });
+
+  expect(
+    validCredentials({ email: "e@mail.com", password: "123" })
+  ).toMatchObject({
+    ok: false,
+    value: {
+      password: "minLength"
+    }
+  });
+
+  expect(
+    validCredentials({ email: "e@mail.com", password: "12345678" })
+  ).toMatchObject({
+    ok: true,
+    value: { email: "e@mail.com", password: "12345678" }
+  });
+});
