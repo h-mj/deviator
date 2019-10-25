@@ -1,33 +1,25 @@
 /**
- * Successful deviation result that is returned immediately and not used in
- * subsequent deviations.
+ * Successful result type with `O` typed value.
  */
-export type Now<N> = { kind: "Now"; ok: true; value: N };
+export interface Ok<O> {
+  ok: true;
+  value: O;
+}
 
 /**
- * Creates `Now<N>` typed result object.
+ * Creates a successful result with specified `value`.
  */
-export const now = <N>(value: N): Now<N> => ({ kind: "Now", ok: true, value });
+export const ok = <O>(value: O): Ok<O> => ({ ok: true, value });
 
 /**
- * Successful deviation result which value is used as the input for subsequent
- * deviation.
+ * Unsuccessful result type with `E` typed value.
  */
-export type Ok<O> = { kind: "Ok"; ok: true; value: O };
+export interface Err<E> {
+  ok: false;
+  value: E;
+}
 
 /**
- * Creates `Ok<O>` typed result object.
+ * Creates an unsuccessful result with specified `value`.
  */
-export const ok = <O>(value: O): Ok<O> => ({ kind: "Ok", ok: true, value });
-
-/**
- * Unsuccessful deviation result.
- *
- * This type of result is returned immediately.
- */
-export type Err<E> = { kind: "Err"; ok: false; value: E };
-
-/**
- * Creates `Err<E>` typed result object.
- */
-export const err = <E>(value: E): Err<E> => ({ kind: "Err", ok: false, value });
+export const err = <E>(value: E): Err<E> => ({ ok: false, value });
