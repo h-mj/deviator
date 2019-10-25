@@ -5,7 +5,7 @@ import { BaseDeviator } from "./BaseDeviator";
  * Deviation builder class which intermediate value extends `number`.
  */
 // prettier-ignore
-export class NumberDeviator<I, O extends number, E> extends BaseDeviator<I, O, E> {
+export class NumberDeviator<I, O extends number, N, E> extends BaseDeviator<I, O, N, E> {
   /**
    * Checks whether current numeric value is greater than specified `value`.
    */

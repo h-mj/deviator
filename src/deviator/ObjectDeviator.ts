@@ -7,7 +7,7 @@ import { BaseDeviator } from "./BaseDeviator";
  */
 // prettier-ignore
 type Schema<O extends object, S extends Schema<O, S>> = {
-  [P in keyof S]: S[P] extends Deviation<P extends keyof O ? O[P] : unknown, unknown, unknown>
+  [P in keyof S]: S[P] extends Deviation<P extends keyof O ? O[P] : unknown, unknown, unknown, unknown>
     ? S[P]
     : never;
 };
@@ -30,7 +30,7 @@ type ShapeErr<S extends Schema<object, object>> = {
  * Deviation builder class which intermediate value extends `object`.
  */
 // prettier-ignore
-export class ObjectDeviator<I, O extends object, E> extends BaseDeviator<I, O, E> {
+export class ObjectDeviator<I, O extends object, N, E> extends BaseDeviator<I, O, N, E> {
   /**
    * Transforms some of the properties of current object value using deviations
    * defined in specified `schema`.

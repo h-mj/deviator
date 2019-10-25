@@ -10,12 +10,12 @@ import { UnknownDeviator } from "./UnknownDeviator";
  * Typed deviator type.
  */
 // prettier-ignore
-export type Deviator<I, O, E>
-  = O extends number ? NumberDeviator<I, O, E>
-  : O extends object ? ObjectDeviator<I, O, E>
-  : O extends string ? StringDeviator<I, O, E>
-  : O extends unknown ? UnknownDeviator<I, O, E>
-  : BaseDeviator<I, O, E>;
+export type Deviator<I, O, N, E>
+  = [O] extends [number] ? NumberDeviator<I, O, N, E>
+  : [O] extends [object] ? ObjectDeviator<I, O, N, E>
+  : [O] extends [string] ? StringDeviator<I, O, N, E>
+  : [O] extends [unknown] ? UnknownDeviator<I, O, N, E>
+  : BaseDeviator<I, O, N, E>;
 
 /**
  * Combines all given prototypes into a single object.
@@ -48,9 +48,9 @@ const prototype = combine(
 /**
  * Returns a deviator with specified `deviation` function.
  */
-export const deviator = <I = unknown, O = never, E = never>(
-  deviation: Deviation<I, O, E>
-): Deviator<I, O, E> => {
+export const deviator = <I = unknown, O = never, N = never, E = never>(
+  deviation: Deviation<I, O, N, E>
+): Deviator<I, O, N, E> => {
   // Overwrite the length property since by default it will return the number of
   // parameters of the function.
   Object.defineProperty(deviation, "length", {

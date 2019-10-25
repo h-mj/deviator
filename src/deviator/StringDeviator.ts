@@ -18,7 +18,7 @@ const GUID_REGEXP = new RegExp(
  * Deviation builder class which intermediate value extends `string`.
  */
 // prettier-ignore
-export class StringDeviator<I, O extends string, E> extends BaseDeviator<I, O, E> {
+export class StringDeviator<I, O extends string, N, E> extends BaseDeviator<I, O, N, E> {
   /**
    * Checks whether current string looks like a valid email address.
    */

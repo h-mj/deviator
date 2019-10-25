@@ -1,4 +1,4 @@
-import { err, ok } from "../result";
+import { err, now, ok } from "../result";
 import { BaseDeviator } from "./BaseDeviator";
 
 // "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function"
@@ -7,7 +7,7 @@ import { BaseDeviator } from "./BaseDeviator";
  * Deviation builder class which intermediate value extends `unknown`.
  */
 // prettier-ignore
-export class UnknownDeviator<I, O extends unknown, E> extends BaseDeviator<I, O, E> {
+export class UnknownDeviator<I, O extends unknown, N, E> extends BaseDeviator<I, O, N, E> {
   /**
    * Checks whether current intermediate value is a `boolean`.
    */
@@ -41,6 +41,27 @@ export class UnknownDeviator<I, O extends unknown, E> extends BaseDeviator<I, O,
    */
   public object() {
     return this.then(input => typeof input === "object" && input !== null ? ok(input as O & object) : err("object" as const));
+  }
+
+  /**
+   * Skips and `undefined` value immediately. Otherwise continues the deviation.
+   */
+  public optional() {
+    return this.then(input => typeof input === "undefined" ? now(input) : ok(input as Exclude<O, undefined>));
+  }
+
+  /**
+   * Checks whether current intermediate value is one of the specified `options`.
+   */
+  public options<T>(options: T[]) {
+    return this.then(input => options.includes(input as O & T) ? ok(input as O & T) : err("options"));
+  }
+
+  /**
+   * Sets current intermediate value to specified `value`.
+   */
+  public set<T>(value: T) {
+    return this.then(() => ok(value));
   }
 
   /**
