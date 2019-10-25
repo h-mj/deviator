@@ -120,3 +120,25 @@ it("validates objects", () => {
     value: { email: "e@mail.com", password: "12345678" }
   });
 });
+
+it("allows optional values", () => {
+  const optionalString = deviate()
+    .optional()
+    .string()
+    .trim();
+
+  expect(optionalString(undefined)).toMatchObject({
+    ok: true,
+    value: undefined
+  });
+
+  expect(optionalString(42)).toMatchObject({
+    ok: false,
+    value: "string"
+  });
+
+  expect(optionalString("  Hello  ")).toMatchObject({
+    ok: true,
+    value: "Hello"
+  });
+});
