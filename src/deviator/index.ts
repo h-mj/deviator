@@ -37,22 +37,14 @@ export type Failure<D> = D extends Deviation<
   : never;
 
 /**
- * If type `N` is `never`, the type is `T`, otherwise `F`.
- */
-type IfNever<N, T, F> = [N] extends [never] ? T : F;
-
-/**
  * Typed deviator type.
  */
 export type Deviator<I, O, N, E> = Deviation<I, O, N, E> &
   BaseDeviator<I, O, N, E> &
-  IfNever<
-    O,
-    {},
-    (O extends number ? NumberDeviator<I, O, N, E> : {}) &
-      (O extends object ? ObjectDeviator<I, O, N, E> : {}) &
-      (O extends string ? StringDeviator<I, O, N, E> : {})
-  >;
+  (O extends number ? NumberDeviator<I, O, N, E> : {}) &
+  (O extends object ? ObjectDeviator<I, O, N, E> : {}) &
+  (O extends string ? StringDeviator<I, O, N, E> : {});
+
 /**
  * Combines all properties except constructors of all given prototypes.
  */
