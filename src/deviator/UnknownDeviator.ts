@@ -40,7 +40,7 @@ export class UnknownDeviator<I, O extends unknown, E> extends BaseDeviator<I, O,
    * Checks whether current intermediate value is an `object`.
    */
   public object() {
-    return this.then(input => typeof input === "object" && input !== null ? ok(input as O & object) : err("number" as const));
+    return this.then(input => typeof input === "object" && input !== null ? ok(input as O & object) : err("object" as const));
   }
 
   /**
@@ -54,6 +54,6 @@ export class UnknownDeviator<I, O extends unknown, E> extends BaseDeviator<I, O,
    * Checks whether current intermediate value is `undefined`.
    */
   public undefined() {
-    return this.then(input => typeof input === "undefined" ? ok(input) : err("string" as const));
+    return this.then(input => typeof input === "undefined" ? ok(input) : err("undefined" as const));
   }
 }
