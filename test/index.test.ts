@@ -18,3 +18,71 @@ it("works with custom deviations", () => {
   expect(numberToStringReverse(1)).toMatchObject({ ok: true, value: "1" });
   expect(numberToStringReverse("1")).toMatchObject({ ok: false, value: "err" });
 });
+
+it("validates email values", () => {
+  const validateEmail = deviate<string>()
+    .trim()
+    .nonempty()
+    .lowercase()
+    .email();
+
+  expect(validateEmail("Hello")).toMatchObject({ ok: false, value: "email" });
+  expect(validateEmail("  ")).toMatchObject({ ok: false, value: "nonempty" });
+  expect(validateEmail(" H@t.e ")).toMatchObject({ ok: true, value: "h@t.e" });
+});
+
+it("validates guid values", () => {
+  const validateGuid = deviate<string>()
+    .guid()
+    .uppercase();
+
+  expect(validateGuid("notGuild")).toMatchObject({ ok: false, value: "guid" });
+  expect(validateGuid("c5caae11-4a23-474e-8f1b-c3ec48c77998")).toMatchObject({
+    ok: true,
+    value: "C5CAAE11-4A23-474E-8F1B-C3EC48C77998"
+  });
+});
+
+it("converts strings to numbers", () => {
+  const toNumber = deviate<string>()
+    .replace(",", ".")
+    .toNumber();
+
+  expect(toNumber("15a")).toMatchObject({ ok: false, value: "toNumber" });
+  expect(toNumber("15.5")).toMatchObject({ ok: true, value: 15.5 });
+  expect(toNumber("12,8")).toMatchObject({ ok: true, value: 12.8 });
+});
+
+it("checks whether string matches regexp", () => {
+  const isBarcode = deviate<string>()
+    .minLength(6)
+    .maxLength(13)
+    .regexp(/^\d+$/);
+
+  expect(isBarcode("1234")).toMatchObject({
+    ok: false,
+    value: "minLength"
+  });
+  expect(isBarcode("123456789012345")).toMatchObject({
+    ok: false,
+    value: "maxLength"
+  });
+  expect(isBarcode("hello there")).toMatchObject({
+    ok: false,
+    value: "regexp"
+  });
+  expect(isBarcode("4444444444444")).toMatchObject({
+    ok: true,
+    value: "4444444444444"
+  });
+});
+
+it("checks string length", () => {
+  const isPin = deviate<string>()
+    .length(4)
+    .regexp(/^\d+$/);
+
+  expect(isPin("1234")).toMatchObject({ ok: true, value: "1234" });
+  expect(isPin("12345")).toMatchObject({ ok: false, value: "length" });
+  expect(isPin("abcd")).toMatchObject({ ok: false, value: "regexp" });
+});
