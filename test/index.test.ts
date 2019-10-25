@@ -142,3 +142,29 @@ it("allows optional values", () => {
     value: "Hello"
   });
 });
+
+it("checks options", () => {
+  const whatTheHeckComeAfterSix = deviate().options([
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ] as const);
+
+  expect(whatTheHeckComeAfterSix("Hello")).toMatchObject({
+    ok: false,
+    value: "options"
+  });
+
+  expect(whatTheHeckComeAfterSix(7)).toMatchObject({
+    ok: false,
+    value: "options"
+  });
+
+  expect(whatTheHeckComeAfterSix(3)).toMatchObject({
+    ok: true,
+    value: 3
+  });
+});
