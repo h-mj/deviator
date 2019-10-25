@@ -53,7 +53,7 @@ export class UnknownDeviator<I, O extends unknown, N, E> extends BaseDeviator<I,
   /**
    * Checks whether current intermediate value is one of the specified `options`.
    */
-  public options<T>(options: T[]) {
+  public options<T>(options: readonly T[]) {
     return this.then(input => options.includes(input as O & T) ? ok(input as O & T) : err("options"));
   }
 
