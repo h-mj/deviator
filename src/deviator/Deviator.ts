@@ -50,7 +50,17 @@ const prototype = combine(
  */
 export const deviator = <I = unknown, O = never, E = never>(
   deviation: Deviation<I, O, E>
-): Deviator<I, O, E> => Object.setPrototypeOf(deviation, prototype);
+): Deviator<I, O, E> => {
+  // Overwrite the length property since by default it will return the number of
+  // parameters of the function.
+  Object.defineProperty(deviation, "length", {
+    get: function() {
+      return prototype.length;
+    }
+  });
+
+  return Object.setPrototypeOf(deviation, prototype);
+};
 
 /**
  * Creates a deviation builder with identity function as the initial deviation.

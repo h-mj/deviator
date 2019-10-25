@@ -11,7 +11,7 @@ export class BaseDeviator<I, O, E> {
   /**
    * Appends specified `deviation` to the deviations chain.
    */
-  public then<O2, E2>(deviation: Deviation<O, O2, E2>) {
+  public then<O2 = never, E2 = never>(deviation: Deviation<O, O2, E2>) {
     const composition: Deviation<I, O2, E | E2> = input => {
       const intermediate = this(input);
 
