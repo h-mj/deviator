@@ -14,6 +14,13 @@ export class NumberDeviator<I, O extends number, E> extends BaseDeviator<I, O, E
   }
 
   /**
+   * Checks whether current numeric value is an integer.
+   */
+  public integer() {
+    return this.then(input => Number.isInteger(input) ? ok(input) : err("integer" as const));
+  }
+
+  /**
    * Checks whether current numeric value is less than specified `value`.
    */
   public less(value: number) {
