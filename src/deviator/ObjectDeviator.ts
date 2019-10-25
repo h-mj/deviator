@@ -15,13 +15,15 @@ type Schema<O extends object, S extends Schema<O, S>> = {
 /**
  * Successful shaping result value type.
  */
-type ShapeOk<S extends Schema<object, object>> = { [P in keyof S]: Success<S> };
+type ShapeOk<S extends Schema<object, object>> = {
+  [P in keyof S]: Success<S[P]>;
+};
 
 /**
  * Unsuccessful shaping result value type.
  */
 type ShapeErr<S extends Schema<object, object>> = {
-  [P in keyof S]?: Failure<S>;
+  [P in keyof S]?: Failure<S[P]>;
 };
 
 /**
