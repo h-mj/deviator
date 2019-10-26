@@ -169,10 +169,23 @@ it("checks options", () => {
   });
 });
 
+it("validates with multiple choice deviation", () => {
+  const isPrimitive = deviate().or(
+    deviate().string(),
+    deviate().number(),
+    deviate().boolean()
+  );
+
+  expect(isPrimitive({})).toMatchObject({ ok: false, value: "or" });
+  expect(isPrimitive(true)).toMatchObject({ ok: true, value: true });
+  expect(isPrimitive("Hello")).toMatchObject({ ok: true, value: "Hello" });
+  expect(isPrimitive(13)).toMatchObject({ ok: true, value: 13 });
+});
+
 it("validates array values", () => {
   const stringNumericArray = deviate()
     .array()
-    .each(deviate().number(), deviate().string());
+    .each(deviate().or(deviate().string(), deviate().number()));
 
   expect(stringNumericArray(14)).toMatchObject({ ok: false, value: "array" });
   expect(stringNumericArray([])).toMatchObject({ ok: true, value: [] });
@@ -190,6 +203,6 @@ it("validates array values", () => {
   });
   expect(stringNumericArray(["Hello", "There", true])).toMatchObject({
     ok: false,
-    value: [undefined, undefined, "number"]
+    value: [undefined, undefined, "or"]
   });
 });
