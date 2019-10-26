@@ -25,13 +25,13 @@ import { deviate } from "deviator";
 
 const toInteger = deviate<string>()
   .trim()
-  .notEmpty()
+  .nonempty()
   .replace(",", ".")
   .toNumber()
   .round(0);
 
-console.log(toInteger("  Hello  ")); // { kind: 'Err', ok: false, value: 'NaN' }
-console.log(toInteger("   12,5  ")); // { kind: 'Ok', ok: true, value: 13 }
+console.log(toInteger("  Hello  ")); // { ok: false, continue: false, value: 'toNumber' }
+console.log(toInteger("   12,5  ")); // { ok: true, continue: true, value: 13 }
 ```
 
 ### Object value transformation
@@ -46,14 +46,14 @@ interface Credentials {
 
 const validate = deviate<Credentials>().shape({
   email: deviate<string>().trim().lowercase().email(),
-  password: deviate<string>().notEmpty()
+  password: deviate<string>().nonempty()
 });
 
 console.log(validate({ email: "raw input", password: "" }));
-// { kind: 'Err', ok: false, value: { email: 'notEmail', password: 'empty' } }
+// { ok: false, continue: false, value: { email: 'email', password: 'nonempty' } }
 
 console.log(validate({ email: " Hello@There.com ", password: "secret" }));
-// { kind: 'Ok', ok: true, value: { email: 'hello@there.com', password: 'secret' } }
+// { ok: true, continue: true, value: { email: 'hello@there.com', password: 'secret' } }
 ```
 
 ### Object validation
@@ -67,13 +67,13 @@ const validate = deviate().object().shape({
 });
 
 console.log(validate("A random string"));
-// { kind: 'Err', ok: false, value: 'notObject' }
+// { ok: false, continue: false, value: 'object' }
 
 console.log(validate({ id: undefined, amount: 12 }));
-// { kind: 'Err', ok: false, value: { id: 'notString' } }
+// { ok: false, continue: false, value: { id: 'string' } }
 
 console.log(validate({ id: "80ceadad-f9ab-44b4-b11e-940cc1cd85aa", amount: 20 }));
-// { kind: 'Ok', ok: true, value: { id: '80ceadad-f9ab-44b4-b11e-940cc1cd85aa', amount: 20 } }
+// { ok: true, continue: true, value: { id: '80ceadad-f9ab-44b4-b11e-940cc1cd85aa', amount: 20 } }
 ```
 
 ### Custom deviations
@@ -82,9 +82,9 @@ console.log(validate({ id: "80ceadad-f9ab-44b4-b11e-940cc1cd85aa", amount: 20 })
 import { deviate, ok } from "deviator";
 
 const squareAndReverse = deviate<number>()
-  .append(input => ok(input * input))
-  .append(input => ok(input.toString()))
-  .append(input => ok(input.split("").reverse().join("")));
+  .then(input => ok(input * input))
+  .then(input => ok(input.toString()))
+  .then(input => ok(input.split("").reverse().join("")));
 
-console.log(squareAndReverse(10)); // { kind: 'Ok', ok: true, value: '001' }
+console.log(squareAndReverse(10)); // { ok: true, continue: true, value: '001' }
 ```
