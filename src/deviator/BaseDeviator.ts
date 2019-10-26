@@ -1,4 +1,5 @@
 import { Deviation } from "../Deviation";
+import { ok } from "../result";
 import { deviator } from "./Deviator";
 
 // eslint-disable-next-line
@@ -8,6 +9,13 @@ export interface BaseDeviator<I, O, N, E> extends Deviation<I, O, N, E> {}
  * Base deviation builder type.
  */
 export class BaseDeviator<I, O, N, E> {
+  /**
+   * Sets current intermediate value to specified `value`.
+   */
+  public set<T>(value: T) {
+    return this.then(() => ok(value));
+  }
+
   /**
    * Appends specified `deviation` to the deviations chain.
    */

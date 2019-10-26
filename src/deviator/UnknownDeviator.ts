@@ -16,6 +16,13 @@ export class UnknownDeviator<I, O extends unknown, N, E> extends BaseDeviator<I,
   }
 
   /**
+   * Checks whether current intermediate value is not `undefined`.
+   */
+  public defined() {
+    return this.then(input => typeof input !== "undefined" ? ok(input as Exclude<O, undefined>) : err("defined" as const));
+  }
+
+  /**
    * Checks whether current intermediate value is a `function`.
    */
   public function() {
@@ -54,14 +61,7 @@ export class UnknownDeviator<I, O extends unknown, N, E> extends BaseDeviator<I,
    * Checks whether current intermediate value is one of the specified `options`.
    */
   public options<T>(options: readonly T[]) {
-    return this.then(input => options.includes(input as O & T) ? ok(input as O & T) : err("options"));
-  }
-
-  /**
-   * Sets current intermediate value to specified `value`.
-   */
-  public set<T>(value: T) {
-    return this.then(() => ok(value));
+    return this.then(input => options.includes(input as O & T) ? ok(input as O & T) : err("options" as const));
   }
 
   /**
