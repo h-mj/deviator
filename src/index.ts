@@ -1,3 +1,3 @@
 export { Deviation, Failure, Success } from "./Deviation";
 export { deviate, Deviator } from "./deviator/Deviator";
-export { err, Err, ok, Ok } from "./result";
+export { err, Err, now, Now, ok, Ok } from "./result";
