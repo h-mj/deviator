@@ -168,3 +168,28 @@ it("checks options", () => {
     value: 3
   });
 });
+
+it("validates array values", () => {
+  const stringNumericArray = deviate()
+    .array()
+    .each(deviate().number(), deviate().string());
+
+  expect(stringNumericArray(14)).toMatchObject({ ok: false, value: "array" });
+  expect(stringNumericArray([])).toMatchObject({ ok: true, value: [] });
+  expect(stringNumericArray([13, "Hello"])).toMatchObject({
+    ok: true,
+    value: [13, "Hello"]
+  });
+  expect(stringNumericArray([13, 42])).toMatchObject({
+    ok: true,
+    value: [13, 42]
+  });
+  expect(stringNumericArray(["Hello", "There"])).toMatchObject({
+    ok: true,
+    value: ["Hello", "There"]
+  });
+  expect(stringNumericArray(["Hello", "There", true])).toMatchObject({
+    ok: false,
+    value: [undefined, undefined, "number"]
+  });
+});
