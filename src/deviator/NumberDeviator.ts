@@ -68,4 +68,15 @@ export class NumberDeviator<I, O extends number, N, E> extends BaseDeviator<I, O
       input > 0 ? ok(input) : err("positive" as const)
     );
   }
+
+  /**
+   * Rounds current numeric value to specified number of decimal `places`.
+   */
+  public round(places = 0) {
+    return this.then(input => {
+      const precision = Math.pow(10, places);
+
+      return ok(Math.round(precision * input) / precision);
+    });
+  }
 }
