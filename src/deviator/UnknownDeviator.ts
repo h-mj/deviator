@@ -9,6 +9,13 @@ import { BaseDeviator } from "./BaseDeviator";
 // prettier-ignore
 export class UnknownDeviator<I, O extends unknown, N, E> extends BaseDeviator<I, O, N, E> {
   /**
+   * Checks whether current intermediate value is an `Array`.
+   */
+  public array() {
+    return this.then(input => Array.isArray(input) ? ok(input as unknown[]) : err("array" as const));
+  }
+
+  /**
    * Checks whether current intermediate value is a `boolean`.
    */
   public boolean() {

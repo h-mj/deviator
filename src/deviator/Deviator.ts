@@ -1,5 +1,6 @@
 import { Deviation } from "../Deviation";
 import { ok } from "../result";
+import { ArrayDeviator } from "./ArrayDeviator";
 import { BaseDeviator } from "./BaseDeviator";
 import { NumberDeviator } from "./NumberDeviator";
 import { ObjectDeviator } from "./ObjectDeviator";
@@ -11,7 +12,8 @@ import { UnknownDeviator } from "./UnknownDeviator";
  */
 // prettier-ignore
 export type Deviator<I, O, N, E>
-  = [O] extends [number] ? NumberDeviator<I, O, N, E>
+  = [O] extends [unknown[]] ? ArrayDeviator<I, O, N, E>
+  : [O] extends [number] ? NumberDeviator<I, O, N, E>
   : [O] extends [object] ? ObjectDeviator<I, O, N, E>
   : [O] extends [string] ? StringDeviator<I, O, N, E>
   : [O] extends [unknown] ? UnknownDeviator<I, O, N, E>
@@ -38,6 +40,7 @@ const combine = (...prototypes: object[]) => {
  * Union of typed deviators that is used as a prototype to newly created deviators.
  */
 const prototype = combine(
+  ArrayDeviator.prototype,
   BaseDeviator.prototype,
   NumberDeviator.prototype,
   ObjectDeviator.prototype,
