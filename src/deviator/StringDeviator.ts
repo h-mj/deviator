@@ -23,21 +23,27 @@ export class StringDeviator<I, O extends string, N, E> extends BaseDeviator<I, O
    * Checks whether current string looks like a valid email address.
    */
   public email() {
-    return this.then(input => EMAIL_REGEXP.test(input) ? ok(input) : err("email" as const));
+    return this.then(input =>
+      EMAIL_REGEXP.test(input) ? ok(input) : err("email" as const)
+    );
   }
 
   /**
    * Checks whether current string looks like a valid GUID.
    */
   public guid() {
-    return this.then(input => GUID_REGEXP.test(input) ? ok(input) : err("guid" as const));
+    return this.then(input =>
+      GUID_REGEXP.test(input) ? ok(input) : err("guid" as const)
+    );
   }
 
   /**
    * Checks whether current string length is specified `length`.
    */
   public length(length: number) {
-    return this.then(input => input.length === length ? ok(input) : err("length" as const))
+    return this.then(input =>
+      input.length === length ? ok(input) : err("length" as const)
+    );
   }
 
   /**
@@ -51,28 +57,36 @@ export class StringDeviator<I, O extends string, N, E> extends BaseDeviator<I, O
    * Checks whether current string length is less or equal to specified `length`.
    */
   public maxLength(length: number) {
-    return this.then(input => input.length <= length ? ok(input) : err("maxLength" as const));
+    return this.then(input =>
+      input.length <= length ? ok(input) : err("maxLength" as const)
+    );
   }
 
   /**
    * Checks whether current string length is greater or equal to specified `length`.
    */
   public minLength(length: number) {
-    return this.then(input => input.length >= length ? ok(input) : err("minLength" as const));
+    return this.then(input =>
+      input.length >= length ? ok(input) : err("minLength" as const)
+    );
   }
 
   /**
    * Checks whether current string is nonempty.
    */
   public nonempty() {
-    return this.then(input => input.length !== 0 ? ok(input) : err("nonempty" as const));
+    return this.then(input =>
+      input.length !== 0 ? ok(input) : err("nonempty" as const)
+    );
   }
 
   /**
    * Checks whether current string matches specified `regexp`.
    */
   public regexp(regexp: RegExp) {
-    return this.then(input => regexp.test(input) ? ok(input) : err("regexp" as const));
+    return this.then(input =>
+      regexp.test(input) ? ok(input) : err("regexp" as const)
+    );
   }
 
   /**
@@ -89,7 +103,7 @@ export class StringDeviator<I, O extends string, N, E> extends BaseDeviator<I, O
     return this.then(input => {
       const value = Number(input);
       return !Number.isNaN(value) ? ok(value) : err("toNumber" as const);
-    })
+    });
   }
 
   /**
