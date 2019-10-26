@@ -8,10 +8,11 @@ import { BaseDeviator } from "./BaseDeviator";
 // prettier-ignore
 export class ArrayDeviator<I, O extends unknown[], N, E> extends BaseDeviator<I, O, N, E> {
   /**
-   * Deviates each value in the array with specified `deviations` in order. If
-   * deviation succeeds, value is replaces with new value and subsequent
-   * deviations are not run. If all deviations fail, array at the same index
-   * will contain the error value.
+   * Deviates each value in the array first by `first` deviation and if that
+   * fails with subsequent deviations and replaces said value with the value of
+   * first successful deviation result. If all specified deviations fail, result
+   * value of the first deviation is assigned to the same index as the deviated
+   * value.
    */
   public each<O2 = never, N2 = never, E2 = never, Os = never, Ns = never, Es = never>(
     first: Deviation<O[number], O2, N2, E2>,
