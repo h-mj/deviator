@@ -11,15 +11,23 @@ export interface Deviation<I, O, N, E> {
 /**
  * Successful deviation result value type.
  */
-// prettier-ignore
-export type Success<D> = D extends Deviation<infer _I, infer O, infer N, infer _E>
-? O | N
-: never;
+export type Success<D> = D extends Deviation<
+  infer _I,
+  infer O,
+  infer N,
+  infer _E
+>
+  ? O | N
+  : never;
 
 /**
  * Unsuccessful deviation result value type.
  */
-// prettier-ignore
-export type Failure<D> = D extends Deviation<infer _I, infer _O, infer _N, infer E>
-? E
-: never;
+export type Failure<D> = D extends Deviation<
+  infer _I,
+  infer _O,
+  infer _N,
+  infer E
+>
+  ? E
+  : never;
