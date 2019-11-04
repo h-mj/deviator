@@ -206,3 +206,13 @@ it("validates array values", () => {
     value: [undefined, undefined, "or"]
   });
 });
+
+it("allows nullable values", () => {
+  const nullableString = deviate()
+    .nullable()
+    .string();
+
+  expect(nullableString(12)).toMatchObject({ ok: false, value: "string" });
+  expect(nullableString("Hello")).toMatchObject({ ok: true, value: "Hello" });
+  expect(nullableString(null)).toMatchObject({ ok: true, value: null });
+});

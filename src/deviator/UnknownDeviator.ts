@@ -1,8 +1,6 @@
 import { err, now, ok } from "../result";
 import { BaseDeviator } from "./BaseDeviator";
 
-// "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function"
-
 /**
  * Deviation builder class which intermediate value extends `unknown`.
  */
@@ -56,6 +54,18 @@ export class UnknownDeviator<I, O extends unknown, N, E> extends BaseDeviator<I,
   }
 
   /**
+   * If current intermediate value is `null`, returns successful result with
+   * `null` value immediately. Otherwise continues the deviation.
+   */
+  public nullable() {
+    return this.then(input =>
+      input === null
+        ? now(null)
+        : ok(input as Exclude<O, null>)
+    );
+  }
+
+  /**
    * Checks whether current intermediate value is a `number`.
    */
   public number() {
@@ -76,7 +86,8 @@ export class UnknownDeviator<I, O extends unknown, N, E> extends BaseDeviator<I,
   }
 
   /**
-   * Skips and `undefined` value immediately. Otherwise continues the deviation.
+   * If current intermediate value is `undefined`, returns successful result
+   * with `undefined` value immediately. Otherwise continues the deviation.
    */
   public optional() {
     return this.then(input =>
